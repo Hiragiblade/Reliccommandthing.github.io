@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relic Code to Command Converter</title>
+</head>
+<body>
+  <h1>Relic Code to Command Converter</h1>
+  <textarea id="relicCode" rows="10" cols="50" placeholder="Paste relic code here..."></textarea><br>
+  <button onclick="convert()">Convert</button><br>
+  <h2>Command:</h2>
+  <p id="command"></p>
+
+  <script>
+    function convert() {
+      const relicCode = document.getElementById("relicCode").value;
+
+      // Extracting ID, level, main affix, and sub affixes from the relic code
+      const id = relicCode.match(/id: (\d+)/)[1];
+      const level = relicCode.match(/level: (\d+)/)[1];
+      const mainAffix = relicCode.match(/main_affix_id: (\d+)/)[1];
+      const subAffixCount = relicCode.match(/cnt: (\d+)/g).length;
+
+      let command = `/relic give ${id} ${level} ${mainAffix} ${subAffixCount}`;
+
+      const subAffixes = relicCode.match(/affix_id: (\d+),\s*cnt: (\d+)/g);
+      subAffixes.forEach((subAffix, index) => {
+        const subAffixId = subAffix.match(/affix_id: (\d+)/)[1];
+        const subAffixCnt = subAffix.match(/cnt: (\d+)/)[1];
+        command += ` ${subAffixId} ${subAffixCnt}`;
+      });
+
+      document.getElementById("command").innerText = command;
+    }
+  </script>
+</body>
+</html>
